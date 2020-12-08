@@ -1,5 +1,8 @@
 
 const axios = require('axios');
+/**
+ * @module validators
+ */
 const abi = require('./abis/RelaySet.abi.json');
 const metaDataAbi = require('./abis/ValidatorMetadata.abi.json');
 const Web3 = require('web3');
@@ -33,7 +36,7 @@ async function getValidatorArray() {
   console.log('------------------------------------------');
   // Check and print each institute
   let resultArray = [];
-  for (let i = 0; i < 3; i++) { // Debug
+  for (let i = 0; i < 2; i++) { // Debug
   // for (let i = 0; i < validators.length; i++) {
     let address = validators[i];
     validatorData = await getLastBlock(address);
