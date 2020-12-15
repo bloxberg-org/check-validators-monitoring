@@ -1,20 +1,24 @@
 # check-validators-monitoring
+
 A simple tool to periodically check the bloxberg validators and send them emails that are retrieved from Cobra contacts.
 
 ## Requirements
+
 - nodejs
 - npm
 
 ## Instructions
 
 ### Install the dependencies
+
 ```
 npm install
 ```
 
-### Get the contacts 
+### Get the contacts
 
-Export the techie and consoritum contacts in the .csv format. The file from Cobra should have the following fields: 
+Export the techie and consoritum contacts in the .csv format. The file from Cobra should have the following fields:
+
 ```
 Haupt,Institution,Institut,Anrede,Titel,Vorname1,Nachname1,E-Mail1,Bemerkung
 ```
@@ -26,11 +30,32 @@ Do the similar steps for all consortium contacts. Go to the tab Receherchieren. 
 Finally copy the files `bloxberg_techies.csv` and `bloxberg_consortium.csv` in the project root.
 
 ### Mail credentials
+
 Copy the file `.env-template` to a new file called `.env`. Add the SMTP credentials for each variable. You can use a service like [Mailtap](https://mailtrap.io/) to test emails.
 
-## Run 
+## Run
 
 Run the script with
+
 ```
 node index.js
+```
+
+## Logs
+
+Logs will be written to `logs/` in winston format. Example:
+
+```javascript
+logger.log("Something happens", obj);
+```
+
+Gets saved as
+
+```js
+{
+  timestamp: Date,
+  level: 'info',
+  message: 'Something happens',
+  metadata: obj
+}
 ```

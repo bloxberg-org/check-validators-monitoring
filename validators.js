@@ -12,6 +12,7 @@ const metaDataContractAddress = '0xF2Cde379d6818Db4a8992ed132345e18e99689e9';
 const web3 = new Web3(provider);
 const contract = new web3.eth.Contract(abi, contractAddress);
 const metaDataContract = new web3.eth.Contract(metaDataAbi, metaDataContractAddress);
+const logger = require('./logger');
 
 /**
  * @function to check when validators were online.
@@ -28,16 +29,16 @@ const metaDataContract = new web3.eth.Contract(metaDataAbi, metaDataContractAddr
  *  isUp14d: Boolean
  * }, ...]
  */
-async function getValidatorArray() {
+exports.getValidatorArray = async () => {
 
   const validators = await contract.methods.getValidators().call();
 
-  console.log('    24h\t14d\tInstitute Name: Address');
-  console.log('------------------------------------------');
+  logger.log('    24h\t14d\tInstitute Name: Address');
+  logger.log('------------------------------------------');
   // Check and print each institute
   let resultArray = [];
-  for (let i = 0; i < 7; i++) { // Debug
-  // for (let i = 0; i < validators.length; i++) {
+  for (let i = 0; i < 3; i++) { // Debug
+    // for (let i = 0; i < validators.length; i++) {
     let address = validators[i];
     validatorData = await getLastBlock(address);
     instituteName = await getInstituteName(address);
@@ -52,12 +53,12 @@ async function getValidatorArray() {
     let num = i + 1 + '.'; // 2. 14. etc.
     num = num.padEnd(3, ' '); // Add padding for printing.
     let displayNameAndAddress = instituteName.slice(0, 31).padEnd(31, ' ') + ': ' + address;
-    console.log(`${num} ${isUp24h ? '✅' : '❌'}\t${isUp14d ? '✅' : '❌'}\t${displayNameAndAddress}`);
+    logger.log(`${num} ${isUp24h ? '✅' : '❌'}\t${isUp14d ? '✅' : '❌'}\t${displayNameAndAddress}`);
     resultArray[i] = {
       instituteName,
       address,
       lastOnline,
-      isUp24h, 
+      isUp24h,
       isUp14d
     }
   }
@@ -75,7 +76,7 @@ getInstituteName = (address) => {
   return metaDataContract.methods.validatorsMetadata(address).call()
     .then(result => {
       // Return name
-        return result.researchInstitute;
+      return result.researchInstitute;
     })
 }
 
@@ -89,8 +90,4 @@ isDateWithin14d = (date) => {
   let timeStamp = Math.round(new Date().getTime() / 1000);
   let timeStamp14DaysAgo = timeStamp - (14 * 24 * 3600);
   return date >= new Date(timeStamp14DaysAgo * 1000).getTime();
-}
-
-module.exports = {
-  getValidatorArray
 }

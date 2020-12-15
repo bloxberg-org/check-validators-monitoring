@@ -3,8 +3,9 @@ const fs = require('fs')
 const stripBom = require('strip-bom-stream'); // See https://github.com/mafintosh/csv-parser#byte-order-marks
 const ethereumRegex = require('ethereum-regex')
 
-const TECHIE_FILE='bloxberg_techies.csv';
-const CONSORTIUM_FILE='bloxberg_consortium.csv';
+const TECHIE_FILE = 'bloxberg_techies.csv';
+const CONSORTIUM_FILE = 'bloxberg_consortium.csv';
+const logger = require('./logger');
 
 /**
  * @function getContactDetails to get the contact details for each input validator.
@@ -57,15 +58,16 @@ const CONSORTIUM_FILE='bloxberg_consortium.csv';
  * 
  */
 exports.getContactDetails = async (offlineValidatorsArray) => {
+  logger.log('Offline validators are: ', offlineValidatorsArray);
   let result = [];
-  
+
   // Prepare data
   let techies = await readCSVtoJson(TECHIE_FILE);
   let consortium = await readCSVtoJson(CONSORTIUM_FILE);
   let addressInstitutionMap = mapAddressToInsitutions(consortium);
   let groupedTechies = groupContactsByInstitution(techies);
   let groupedConsortium = groupContactsByInstitution(consortium);
-  
+
   for (validator of offlineValidatorsArray) {
     let address = validator.address;
     let institution = addressInstitutionMap[address];
@@ -99,7 +101,7 @@ exports.getContactDetails = async (offlineValidatorsArray) => {
  */
 function readCSVtoJson(fileName) {
   let resultsArr = [];
-  return new Promise((resolve,reject) => {
+  return new Promise((resolve, reject) => {
     fs.createReadStream(fileName)
       .pipe(stripBom())
       .pipe(csv())
@@ -153,9 +155,9 @@ function decideInstitutionName(obj) {
 function mapAddressToInsitutions(contactsArray) {
   let result = {}
   for (contact of contactsArray) {
-    if (contact.haupt === 'H' && ethereumRegex().test(contact.comments)){
+    if (contact.haupt === 'H' && ethereumRegex().test(contact.comments)) {
       let addr = contact.comments.match(ethereumRegex());
-      result[addr]= contact.institution;
+      result[addr] = contact.institution;
     }
   }
   return result;
@@ -197,12 +199,12 @@ function mapAddressToInsitutions(contactsArray) {
 function groupContactsByInstitution(contactsArray) {
   let result = {}
   for (contact of contactsArray) {
-    if(contact.haupt === 'H') { // Ignore Haupt address
+    if (contact.haupt === 'H') { // Ignore Haupt address
       continue
     }
 
     let inst = contact.institution;
-    if (!result[inst]){ // Init array
+    if (!result[inst]) { // Init array
       result[inst] = [];
     }
 

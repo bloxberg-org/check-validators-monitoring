@@ -7,6 +7,7 @@ const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
 const HTML_TEMPLATE = fs.readFileSync(path.resolve(__dirname,'./email-template.html'), 'utf-8');
+const logger = require('./logger');
 
 const transport = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -26,6 +27,7 @@ const transport = nodemailer.createTransport({
  * @returns {Promise} initially a single wrapped promise, returns an array of results. see Promise.all().
  */
 exports.sendNoticeMails = (contactsArray) => {
+  logger.log('Sending notice mails to: ', contactsArray)
   let promises = [];
   for (contact of contactsArray) {
     promises.push(sendNoticeMail(contact));
@@ -56,10 +58,10 @@ exports.sendNoticeMails = (contactsArray) => {
  * 
  */
 function sendNoticeMail(validatorObj) {
+  logger.log('Sending email to: ', validatorObj)
   let { institution, address, title, academicTitle, firstName, lastName, email, lastOnline } = validatorObj;
   let lastOnlineDateString = moment(lastOnline).format('MMMM Do YYYY')
   let lastOnlineTimeString = moment(lastOnline).format('hh:mm a [Germany time]')
-  console.log('Sending email to: ' + institution +': ' + email)
   const properties = {
     fullTitle: academicTitle ? ' ' + academicTitle : (title ? ' ' + title : ''),  // use academic title if exist, otherwise Mr. Mrs. Herr etc. Fix template leaving extra space.
     firstName, lastName, institution, address,
