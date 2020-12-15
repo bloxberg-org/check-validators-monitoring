@@ -37,7 +37,8 @@ const CONSORTIUM_FILE='bloxberg_consortium.csv';
         firstName: 'John',
         lastName: 'Doe',
         email: 'john[at]doe.edu',
-        comments: 'comments'
+        comments: 'comments',
+        lastOnline: 2020-12-03T13:01:52.000Z
       },
       {
         haupt: 'N',
@@ -48,7 +49,8 @@ const CONSORTIUM_FILE='bloxberg_consortium.csv';
         firstName: 'Alice',
         lastName: 'Smith',
         email: 'alice[at]abc.edu',
-        comments: 'comments'
+        comments: 'comments',
+        lastOnline: 2020-11-04T11:06:50.000Z
       },
       ....
  * ]
@@ -79,6 +81,7 @@ exports.getContactDetails = async (offlineValidatorsArray) => {
     let contactsWithAddress = contacts.map(contact => {
       return {
         address: address,
+        lastOnline: validator.lastOnline,
         ...contact
       }
     })

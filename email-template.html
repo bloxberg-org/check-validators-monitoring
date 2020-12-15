@@ -1,0 +1,37 @@
+<style>
+  .container{
+    font-family: sans-serif;
+  }
+  .topBar {
+    background-color: #e9e9e9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+  }
+  .logoContainer img {
+    width: 200px
+  }
+  .text {
+    margin: 16px;
+  }
+</style>
+<div class='container'>
+  <div class='topBar'>
+    <span class='logoContainer'>
+      <img src='https://bloxberg.org/wp-content/uploads/2019/07/logo.png'>
+    </span>
+  </div>
+  <div class="text">
+    <p>Dear{{fullTitle}} {{firstName}} {{lastName}},</p>
+
+    <p>It seems your bloxberg validator node at {{institution}} has been offline since <b>{{lastOnlineDateString}}</b>, {{lastOnlineTimeString}}.</p>
+
+    <p>Could you please check if there is a problem with the validator? Also, please make sure the bootnodes.txt of your validator is up to date with the most recent one here. </p>
+
+    <p>You can check the last time your node validated blocks from the <a href='https://blockexplorer.bloxberg.org/address/{{address}}/validations'>block explorer</a>. If you have questions, please contact us here at <a href="mailto:info@bloxberg.org">monitoring@bloxberg.org</a>.</p>
+
+    Regards<br/>
+    bloxberg Validator Monitoring
+  </div>
+</div>

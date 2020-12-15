@@ -36,8 +36,8 @@ async function getValidatorArray() {
   console.log('------------------------------------------');
   // Check and print each institute
   let resultArray = [];
-  // for (let i = 0; i < 10; i++) { // Debug
-  for (let i = 0; i < validators.length; i++) {
+  for (let i = 0; i < 7; i++) { // Debug
+  // for (let i = 0; i < validators.length; i++) {
     let address = validators[i];
     validatorData = await getLastBlock(address);
     instituteName = await getInstituteName(address);
