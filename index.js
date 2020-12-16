@@ -14,7 +14,7 @@ const logger = require('./logger');
 // * 13 */5 * * ==> every fifth day of the month at 13:00 5th, 10th, 15th...
 //
 
-// schedule.scheduleJob('* 13 * * * 1', checkValidatorsAndSendEmails);
+schedule.scheduleJob('* 13 * * 1', checkValidatorsAndSendEmails);
 
 function checkValidatorsAndSendEmails() {
   getValidatorArray()
