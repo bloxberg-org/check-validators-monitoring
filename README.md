@@ -7,6 +7,10 @@ A simple tool to periodically check the bloxberg validators and send them emails
 - nodejs
 - npm
 
+or
+
+- Docker
+
 ## Instructions
 
 ### Install the dependencies
@@ -14,6 +18,8 @@ A simple tool to periodically check the bloxberg validators and send them emails
 ```
 npm install
 ```
+
+or run in Docker. See below.
 
 ### Get the contacts
 
@@ -45,6 +51,20 @@ Run the script with
 
 ```
 node index.js
+```
+
+## Docker
+
+You can run the script in a lightweight container with:
+
+```
+docker-compose up
+```
+
+Run in background
+
+```
+docker-compose up -d
 ```
 
 ## Logs

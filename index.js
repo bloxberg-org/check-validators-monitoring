@@ -15,6 +15,7 @@ const logger = require('./logger');
 //
 
 schedule.scheduleJob('* 13 * * 1', checkValidatorsAndSendEmails);
+// schedule.scheduleJob('*/5 * * * * *', () => logger.log('Hi'));
 
 function checkValidatorsAndSendEmails() {
   getValidatorArray()
