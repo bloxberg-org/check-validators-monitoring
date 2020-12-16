@@ -3,27 +3,24 @@ const { format, transports } = logger;
 require('winston-daily-rotate-file');
 
 const fileLogOptions = {
-  format: format.combine(
-    format.json(),
-    // Shouldn't be used in production. Sorry. see https://github.com/winstonjs/logform#prettyprint
-    // format.prettyPrint(),
-    format.timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss'
-    }),
-  ),
   // winston-daily-rotate-file options
   datePattern: 'YYYY-MM-DD', // daily logs
   handleExceptions: true,
-  maxFiles: '30d'
+  maxFiles: '30d',
+  format: format.combine(
+    format.timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss'
+    }),
+    format.json()
+  )
 }
 
 // code from: https://github.com/winstonjs/winston
 const mainLoggers = logger.createLogger({
   level: 'info',
-  format: format.combine( // Shared format of file and console loggers.
-    format.metadata(),
+  format: format.combine(
+    format.metadata({ fillExcept: ['timestamp', 'level', 'message'] })
   ),
-  defaultMeta: { service: 'user-service' },
   transports: [
     new transports.DailyRotateFile({
       ...fileLogOptions,
