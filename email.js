@@ -55,19 +55,24 @@ exports.sendNoticeMails = (contactsArray) => {
   },
  * 
  */
-function sendNoticeMail(validatorObj) {
-  logger.log('Sending notice mail to: ', validatorObj)
-  let { institution, address, title, academicTitle, firstName, lastName, email, lastOnline } = validatorObj;
+function sendNoticeMail(contactArray) {
+  logger.log('Sending notice mail to: ', contactArray)
+  let { institution, address, lastOnline } = contactArray[0]; // Same for all contacts
+  let fullNames = '', emails = [] // Different if multiple contacts
+  for (contact of contactArray) {
+    let { academicTitle, firstName, lastName, email } = contact;
+    fullNames += (academicTitle ? ' ' + academicTitle : '') + ` ${firstName} ${lastName}, `;  // use academic title if exist
+    emails.push(email);
+  }
   let lastOnlineDateString = moment(lastOnline).format('MMMM Do YYYY')
   let lastOnlineTimeString = moment(lastOnline).format('hh:mm a [Germany time]')
   const properties = {
-    fullTitle: academicTitle ? ' ' + academicTitle : '',  // use academic title if exist
-    firstName, lastName, institution, address,
+    fullNames, institution, address,
     lastOnlineDateString, lastOnlineTimeString
   }
   const message = {
     from: `bloxberg Validator Monitoring <monitoring@bloxberg.org>`,
-    to: email,
+    to: emails,
     subject: 'bloxberg Validator Offline',
     html: applyTemplate(HTML_TEMPLATE, properties)
   };

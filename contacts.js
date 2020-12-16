@@ -26,10 +26,10 @@ const logger = require('./logger');
     isUp24h: false,
     isUp3d: false
   }
- * @returns {Promise<Array>} that resolves to an array of contact objects including the address fields. 
+ * @returns {Promise<Array>} that resolves to an array of an array of contact objects including the address fields. Each element of first array is an institution and each object in second array is the contacts for that institution.
  * @example
  *  [
-*     {
+*     [{
         haupt: 'N',
         institution: "Doe university",
         address: "0x841C25A1b2bA723591c14636Dc13E4deeb65A79b",
@@ -40,19 +40,33 @@ const logger = require('./logger');
         email: 'john[at]doe.edu',
         comments: 'comments',
         lastOnline: 2020-12-03T13:01:52.000Z
-      },
-      {
-        haupt: 'N',
-        institution: "ABC university"
-        address: "0xadF2sA1b26Dcb1A723591c144deeb6633E5A79b",
-        title: 'Mrs.',
-        academicTitle: '',
-        firstName: 'Alice',
-        lastName: 'Smith',
-        email: 'alice[at]abc.edu',
-        comments: 'comments',
-        lastOnline: 2020-11-04T11:06:50.000Z
-      },
+      }],
+      [
+        {
+          haupt: 'N',
+          institution: "ABC university"
+          address: "0xadF2sA1b26Dcb1A723591c144deeb6633E5A79b",
+          title: 'Mrs.',
+          academicTitle: '',
+          firstName: 'Alice',
+          lastName: 'Smith',
+          email: 'alice[at]abc.edu',
+          comments: 'comments',
+          lastOnline: 2020-11-04T11:06:50.000Z
+        },
+        {
+          haupt: 'N',
+          institution: "ABC university"
+          address: "0xadF2sA1b26Dcb1A723591c144deeb6633E5A79b",
+          title: 'Mr.',
+          academicTitle: '',
+          firstName: 'Micheal',
+          lastName: 'Jordan',
+          email: 'mike[at]abc.edu',
+          comments: 'other comments',
+          lastOnline: 2020-11-04T11:06:50.000Z
+        }
+      ],
       ....
  * ]
  * 
@@ -88,7 +102,7 @@ exports.getContactDetails = async (offlineValidatorsArray) => {
       }
     })
 
-    result = result.concat(contactsWithAddress);
+    result.push(contactsWithAddress);
   }
   return result;
 }
