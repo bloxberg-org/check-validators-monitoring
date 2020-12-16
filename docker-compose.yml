@@ -1,0 +1,9 @@
+version: "3"
+services:
+  monitoring:
+    image: node:12-alpine
+    container_name: validators-monitoring
+    volumes:
+      - .:/home/node
+    working_dir: /home/node/
+    command: sh -c "npm install && node index.js"

@@ -37,7 +37,7 @@ exports.getValidatorArray = async () => {
   logger.log('------------------------------------------');
   // Check and print each institute
   let resultArray = [];
-  // for (let i = 0; i < 3; i++) { // Debug
+  // for (let i = 0; i < 5; i++) { // Debug
   for (let i = 0; i < validators.length; i++) {
     let address = validators[i];
     validatorData = await getLastBlock(address);
