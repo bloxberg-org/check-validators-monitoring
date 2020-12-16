@@ -17,7 +17,7 @@ const logger = require('./logger');
 /**
  * @function to check when validators were online.
  * 
- * Gets the list of validator addresses from the contract. Then asks the blockexplorer.bloxberg.org when their last validator block was. Check if the last block is within 24h and 14d. 
+ * Gets the list of validator addresses from the contract. Then asks the blockexplorer.bloxberg.org when their last validator block was. Check if the last block is within 24h and 3d. 
  * 
  * @returns {Object[]} Array of objects for each validator in format:
  * @example 
@@ -26,40 +26,40 @@ const logger = require('./logger');
  *  address: String,
  *  lastOnline: Date,
  *  isUp24h: Boolean,
- *  isUp14d: Boolean
+ *  isUp3d: Boolean
  * }, ...]
  */
 exports.getValidatorArray = async () => {
 
   const validators = await contract.methods.getValidators().call();
 
-  logger.log('    24h\t14d\tInstitute Name: Address');
+  logger.log('    24h 3d\tInstitute Name: Address');
   logger.log('------------------------------------------');
   // Check and print each institute
   let resultArray = [];
-  for (let i = 0; i < 3; i++) { // Debug
-    // for (let i = 0; i < validators.length; i++) {
+  // for (let i = 0; i < 3; i++) { // Debug
+  for (let i = 0; i < validators.length; i++) {
     let address = validators[i];
     validatorData = await getLastBlock(address);
     instituteName = await getInstituteName(address);
     let isUp24h = false;
-    let isUp14d = false;
+    let isUp3d = false;
     let lastOnline;
     if (validatorData.status == 1) {
       lastOnline = new Date(validatorData.result[0].timeStamp);
       isUp24h = isDateWithin24h(lastOnline);
-      isUp14d = isDateWithin14d(lastOnline);
+      isUp3d = isDateWithin3d(lastOnline);
     }
     let num = i + 1 + '.'; // 2. 14. etc.
     num = num.padEnd(3, ' '); // Add padding for printing.
     let displayNameAndAddress = instituteName.slice(0, 31).padEnd(31, ' ') + ': ' + address;
-    logger.log(`${num} ${isUp24h ? '✅' : '❌'}\t${isUp14d ? '✅' : '❌'}\t${displayNameAndAddress}`);
+    logger.log(`${num} ${isUp24h ? '✅' : '❌'}\t${isUp3d ? '✅' : '❌'}\t${displayNameAndAddress}`);
     resultArray[i] = {
       instituteName,
       address,
       lastOnline,
       isUp24h,
-      isUp14d
+      isUp3d
     }
   }
   return resultArray;
@@ -86,8 +86,8 @@ isDateWithin24h = (date) => {
   return date >= new Date(timeStampYesterday * 1000).getTime();
 }
 
-isDateWithin14d = (date) => {
+isDateWithin3d = (date) => {
   let timeStamp = Math.round(new Date().getTime() / 1000);
-  let timeStamp14DaysAgo = timeStamp - (14 * 24 * 3600);
-  return date >= new Date(timeStamp14DaysAgo * 1000).getTime();
+  let timeStamp3DaysAgo = timeStamp - (3 * 24 * 3600);
+  return date >= new Date(timeStamp3DaysAgo * 1000).getTime();
 }

@@ -24,7 +24,7 @@ const logger = require('./logger');
     address: '0x841C25A1b2bA723591c14636Dc13E4deeb65A79b',
     lastOnline: 2020-11-04T11:06:50.000Z,
     isUp24h: false,
-    isUp14d: false
+    isUp3d: false
   }
  * @returns {Promise<Array>} that resolves to an array of contact objects including the address fields. 
  * @example

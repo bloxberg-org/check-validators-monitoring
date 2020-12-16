@@ -2,12 +2,6 @@ const logger = require('winston');
 const { format, transports } = logger;
 require('winston-daily-rotate-file');
 
-// ===== Set winston logger up ======
-// Use default logger of the library
-// logger.createLogger(options)
-// instead of declaring a new logger below with:
-// var logger = logger.createLogger(....) as in the examples
-
 const fileLogOptions = {
   format: format.combine(
     format.json(),

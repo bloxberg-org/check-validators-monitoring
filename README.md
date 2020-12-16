@@ -1,6 +1,6 @@
 # check-validators-monitoring
 
-A simple tool to periodically check the bloxberg validators and send them emails that are retrieved from Cobra contacts.
+A simple tool to periodically check the bloxberg validators and send them emails that are retrieved from Cobra contacts. Current setting checks if validators have been online since 3 days and runs every Monday at 13:00.
 
 ## Requirements
 
@@ -32,6 +32,10 @@ Finally copy the files `bloxberg_techies.csv` and `bloxberg_consortium.csv` in t
 ### Mail credentials
 
 Copy the file `.env-template` to a new file called `.env`. Add the SMTP credentials for each variable. You can use a service like [Mailtap](https://mailtrap.io/) to test emails.
+
+### Set the schedule
+
+Set the cron schedule at `index.js`.
 
 ## Run
 
