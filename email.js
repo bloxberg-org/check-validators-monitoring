@@ -6,15 +6,15 @@ const nodemailer = require('nodemailer');
 const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
-const HTML_TEMPLATE = fs.readFileSync(path.resolve(__dirname,'./email-template.html'), 'utf-8');
+const HTML_TEMPLATE = fs.readFileSync(path.resolve(__dirname, './email-template.html'), 'utf-8');
 const logger = require('./logger');
 
 const transport = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: process.env.SMTP_PASS,
   auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
   }
 });
 
@@ -27,12 +27,10 @@ const transport = nodemailer.createTransport({
  * @returns {Promise} initially a single wrapped promise, returns an array of results. see Promise.all().
  */
 exports.sendNoticeMails = (contactsArray) => {
-  logger.log('Sending notice mails to: ', contactsArray)
   let promises = [];
-  for (contact of contactsArray) {
-    promises.push(sendNoticeMail(contact));
+  for (let i = 0; i < contactsArray.length; i++) {
+    promises.push(setTimeout(() => sendNoticeMail(contactsArray[i]), 2500 * i)) // Avoid sending too much at once
   }
-
   return Promise.all(promises);
 }
 
@@ -58,18 +56,18 @@ exports.sendNoticeMails = (contactsArray) => {
  * 
  */
 function sendNoticeMail(validatorObj) {
-  logger.log('Sending email to: ', validatorObj)
+  logger.log('Sending notice mail to: ', validatorObj)
   let { institution, address, title, academicTitle, firstName, lastName, email, lastOnline } = validatorObj;
   let lastOnlineDateString = moment(lastOnline).format('MMMM Do YYYY')
   let lastOnlineTimeString = moment(lastOnline).format('hh:mm a [Germany time]')
   const properties = {
-    fullTitle: academicTitle ? ' ' + academicTitle : (title ? ' ' + title : ''),  // use academic title if exist, otherwise Mr. Mrs. Herr etc. Fix template leaving extra space.
+    fullTitle: academicTitle ? ' ' + academicTitle : '',  // use academic title if exist
     firstName, lastName, institution, address,
     lastOnlineDateString, lastOnlineTimeString
   }
   const message = {
     from: `bloxberg Validator Monitoring <monitoring@bloxberg.org>`,
-    to: `uzdogan@mpdl.mpg.de`,
+    to: email,
     subject: 'bloxberg Validator Offline',
     html: applyTemplate(HTML_TEMPLATE, properties)
   };
@@ -82,17 +80,17 @@ function sendNoticeMail(validatorObj) {
 // Replaces properties in {{ double parantheses }} with values in the parameter object.
 // from: https://stackoverflow.com/questions/29831810/how-to-fill-information-into-a-template-text-file
 function applyTemplate(template, properties) {
-    var returnValue = "";
+  var returnValue = "";
 
-    var templateFragments = template.split("{{");
+  var templateFragments = template.split("{{");
 
-    returnValue += templateFragments[0];
+  returnValue += templateFragments[0];
 
-    for (var i = 1; i < templateFragments.length; i++) {
-        var fragmentSections = templateFragments[i].split("}}", 2);
-        returnValue += properties[fragmentSections[0]];
-        returnValue += fragmentSections[1];
-    }
+  for (var i = 1; i < templateFragments.length; i++) {
+    var fragmentSections = templateFragments[i].split("}}", 2);
+    returnValue += properties[fragmentSections[0]];
+    returnValue += fragmentSections[1];
+  }
 
-    return returnValue;
+  return returnValue;
 }
