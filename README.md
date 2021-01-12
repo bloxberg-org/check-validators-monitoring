@@ -67,6 +67,14 @@ Run in background
 docker-compose up -d
 ```
 
+### Applying changes
+
+If you made a change, don't forget to rebuild the container with
+
+```
+docker-compose up -d --build
+```
+
 ## Logs
 
 Logs will be written to `logs/` in winston format. Example:
