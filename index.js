@@ -10,8 +10,8 @@ const logger = require('./logger');
 // minute hour day month day-of-week
 //   *     13   *    *        1    
 // 
-// * 13 * * 1 ==>  every Monday at 13:00
-// * 13 */5 * * ==> every fifth day of the month at 13:00 5th, 10th, 15th...
+// 0 13 * * 1 ==>  every Monday at 13:00
+// 0 13 */5 * * ==> every fifth day of the month at 13:00 5th, 10th, 15th...
 //
 
 schedule.scheduleJob('0 13 * * 1', checkValidatorsAndSendEmails);
