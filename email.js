@@ -35,6 +35,26 @@ exports.sendNoticeMails = (contactsArray) => {
 }
 
 /**
+ * Function to send error emails to admins when the script fails.
+ * 
+ * @param {Array} emails - array of email strings as receivers
+ * @param {Error} error - the thrown Error object
+ */
+exports.sendErrorEmails = (emails, error) => {
+  const message = {
+    from: `bloxberg Validator Monitoring <monitoring@bloxberg.org>`,
+    to: emails,
+    subject: '❗ ERROR: bloxberg Validator Offline',
+    text: `When running the script the following error is encountered\n\n
+          ${error.message}\n\n
+          ${error.stack}`
+  };
+
+  // return setTimeout(() => Promise.resolve(`Email sent to ${institution}: ${email}`), Math.random() * 1000 * 2) // Debug with randomly resolved Promises.
+  return transport.sendMail(message);
+}
+
+/**
  * @function to send a notice email to the validator input. 
  * 
  * @param {Object} validatorObj returned Object from module:validators.getValidatorArray.

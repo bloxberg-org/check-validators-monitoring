@@ -82,28 +82,35 @@ exports.getContactDetails = async (offlineValidatorsArray) => {
   let groupedTechies = groupContactsByInstitution(techies);
   let groupedConsortium = groupContactsByInstitution(consortium);
 
+  console.log(groupedTechies)
+  let noContacts = []
   for (validator of offlineValidatorsArray) {
     let address = validator.address;
     let institution = addressInstitutionMap[address];
+    logger.info('Processing contacts for institution with address ' + validator.address + ' and name ' + institution)
     let contacts; // of this validator
+
     // If there's a techie for the institution add them as contact
     if (groupedTechies[institution]) {
-      contacts = groupedTechies[institution]; // ref not copy but OK
-    } else { // all other contacts we have
-      contacts = groupedConsortium[institution]; // ref not copy but OK
+      contacts = groupedTechies[institution];
+    } else if (groupedConsortium[institution]) { // all other contacts we have
+      contacts = groupedConsortium[institution];
+    } else {  // no contacts
+      noContacts.push(address);
     }
 
     // Add address field to contact object
-    let contactsWithAddress = contacts.map(contact => {
+    let contactsWithAddress = contacts && contacts.map(contact => { // if contacts undefined, throw below.
       return {
         address: address,
         lastOnline: validator.lastOnline,
         ...contact
       }
     })
-
     result.push(contactsWithAddress);
   }
+  if (noContacts.length > 0)
+    throw new Error('Couldnt find contacts for addresses ' + noContacts.join())
   return result;
 }
 
@@ -171,7 +178,7 @@ function mapAddressToInsitutions(contactsArray) {
   for (contact of contactsArray) {
     if (contact.haupt === 'H' && ethereumRegex().test(contact.comments)) {
       let addr = contact.comments.match(ethereumRegex());
-      result[addr] = contact.institution;
+      result[addr] = contact.institution; // 0xEafe556569895f555755815131D21D49AFdb2Efe": "Universität Zürich"
     }
   }
   return result;
