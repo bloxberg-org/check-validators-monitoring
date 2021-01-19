@@ -31,9 +31,9 @@ Haupt,Institution,Institut,Anrede,Titel,Vorname1,Nachname1,E-Mail1,Bemerkung
 
 **Important** if you'll do a custom research don't forget to exclude inactive users. Always use the saved search.
 
-There are existing settings in Cobra CRM for exporting. To do that go to the tab Recherchieren. There select Gespeicherte Recherchen. In Bereich System, choose Bloxberg Techies Monitoring. Click OK. Then in Daten tab click Exportieren. In the settings there is an ready made formatting called 'Validator Monitoring - Techies'. Choose the setting and export the file. The file name must be `bloxberg_techies.csv`.
+There are existing settings in Cobra CRM for exporting. To do that go to the tab Recherche. There select Gespeicherte Recherchen. In Bereich System, choose Bloxberg Techies Monitoring. Click Ausführen. Then in Daten tab click Exportieren. In the settings there is an ready made formatting called 'Validator Monitoring - Techies'. Choose the setting and export the file. The file name must be `bloxberg_techies.csv`.
 
-Do the similar steps for all consortium contacts. Go to the tab Receherchieren. Click Gespeicherte Recherchen. In Bereich System, choose Bloxberg Consortium Monitoring. In Data tab click Exportieren. The formatting is call 'Validator Monitoring - Consortium'. Choose the setting and export the file. The file name must be `bloxberg_consortium.csv`.
+Do the similar steps for all consortium contacts. Go to the tab Receherche. Click Gespeicherte Recherchen. In Bereich System, choose Bloxberg Consortium Monitoring. In Data tab click Exportieren. The formatting is call 'Validator Monitoring - Consortium'. Choose the setting and export the file. The file name must be `bloxberg_consortium.csv`.
 
 Finally copy the files `bloxberg_techies.csv` and `bloxberg_consortium.csv` in the project root.
 
