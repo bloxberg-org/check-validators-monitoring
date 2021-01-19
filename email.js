@@ -41,6 +41,7 @@ exports.sendNoticeMails = (contactsArray) => {
  * @param {Error} error - the thrown Error object
  */
 exports.sendErrorEmails = (emails, error) => {
+  logger.log('Sending error emails to ' + emails.join() + 'about: ' + error)
   const message = {
     from: `bloxberg Validator Monitoring <monitoring@bloxberg.org>`,
     to: emails,
@@ -48,6 +49,33 @@ exports.sendErrorEmails = (emails, error) => {
     text: `When running the script the following error is encountered\n\n
           ${error.message}\n\n
           ${error.stack}`
+  };
+
+  // return setTimeout(() => Promise.resolve(`Email sent to ${institution}: ${email}`), Math.random() * 1000 * 2) // Debug with randomly resolved Promises.
+  return transport.sendMail(message);
+}
+
+/**
+ * Function to send error emails to admins when the script fails.
+ * 
+ * @param {Array} emails - array of email strings as receivers
+ * @param {Error} error - the thrown Error object
+ */
+exports.sendNotFoundEmails = (emails, notFoundContacts) => {
+  logger.log('Sending not found emails to ' + emails.join() + ' for the addresses: ' + notFoundContacts.map(contact => contact.address).join())
+  const message = {
+    from: `bloxberg Validator Monitoring <monitoring@bloxberg.org>`,
+    to: emails,
+    subject: '❗ Contact Not Found: bloxberg Validator Offline',
+    text: `The following validators do not have an assigned contact and 
+          hence were not able to be contacted. If the institution name is undefined, 
+          it means an associated institution for the address couldn't be found in Cobra input.
+          Otherwise the institution has an associated address but is missing any contacts. \n\n` +
+      notFoundContacts.map(contact => {
+        return `Institution: ${contact.institution} \n\n
+              Address: ${contact.address}\n\n`
+      }).join()
+
   };
 
   // return setTimeout(() => Promise.resolve(`Email sent to ${institution}: ${email}`), Math.random() * 1000 * 2) // Debug with randomly resolved Promises.

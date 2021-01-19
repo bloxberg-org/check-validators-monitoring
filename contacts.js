@@ -73,7 +73,7 @@ const logger = require('./logger');
  */
 exports.getContactDetails = async (offlineValidatorsArray) => {
   logger.log('Offline validators are: ', offlineValidatorsArray);
-  let result = [];
+  let offlineContacts = [];
 
   // Prepare data
   let techies = await readCSVtoJson(TECHIE_FILE);
@@ -83,7 +83,7 @@ exports.getContactDetails = async (offlineValidatorsArray) => {
   let groupedConsortium = groupContactsByInstitution(consortium);
 
   console.log(groupedTechies)
-  let noContacts = []
+  let notFoundContacts = []
   for (validator of offlineValidatorsArray) {
     let address = validator.address;
     let institution = addressInstitutionMap[address];
@@ -96,22 +96,22 @@ exports.getContactDetails = async (offlineValidatorsArray) => {
     } else if (groupedConsortium[institution]) { // all other contacts we have
       contacts = groupedConsortium[institution];
     } else {  // no contacts
-      noContacts.push(address);
+      notFoundContacts.push({ institution, address });
     }
 
     // Add address field to contact object
-    let contactsWithAddress = contacts && contacts.map(contact => { // if contacts undefined, throw below.
-      return {
-        address: address,
-        lastOnline: validator.lastOnline,
-        ...contact
-      }
-    })
-    result.push(contactsWithAddress);
+    if (contacts) {
+      let contactsWithAddress = contacts.map(contact => { // if contacts undefined, throw below.
+        return {
+          address: address,
+          lastOnline: validator.lastOnline,
+          ...contact
+        }
+      })
+      offlineContacts.push(contactsWithAddress);
+    }
   }
-  if (noContacts.length > 0)
-    throw new Error('Couldnt find contacts for addresses ' + noContacts.join())
-  return result;
+  return { offlineContacts, notFoundContacts };
 }
 
 /**

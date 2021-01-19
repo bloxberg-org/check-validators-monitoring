@@ -19,7 +19,7 @@ const fileLogOptions = {
 const mainLoggers = logger.createLogger({
   level: 'info',
   format: format.combine(
-    format.metadata({ fillExcept: ['timestamp', 'level', 'message'] })
+    format.metadata({ fillExcept: ['timestamp', 'level', 'message', 'stack'] })
   ),
   transports: [
     new transports.DailyRotateFile({

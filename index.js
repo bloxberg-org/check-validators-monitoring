@@ -1,6 +1,6 @@
 
 const { getValidatorArray } = require('./validators');
-const { sendNoticeMails, sendErrorEmails } = require('./email');
+const { sendNoticeMails, sendErrorEmails, sendNotFoundEmails } = require('./email');
 const { getContactDetails } = require('./contacts');
 const schedule = require('node-schedule');
 const logger = require('./logger');
@@ -28,12 +28,15 @@ function checkValidatorsAndSendEmails() {
       logger.log("Got the online status for validators: ");
       return getContactDetails(offlineValidatorsArray);
     })
-    .then(offlineContacts => {
-      return sendNoticeMails(offlineContacts);
+    .then(({ offlineContacts, notFoundContacts }) => {
+      return Promise.all([
+        sendNoticeMails(offlineContacts),
+        sendNotFoundEmails(ERROR_CONTACTS, notFoundContacts)
+      ]);
     })
     .catch(err => {
       logger.error("SOMETHING WENT WRONG")
-      logger.error(err)
+      logger.error(err.stack)
       sendErrorEmails(ERROR_CONTACTS, err);
     })
 }
