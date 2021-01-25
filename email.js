@@ -29,7 +29,7 @@ const transport = nodemailer.createTransport({
 exports.sendNoticeMails = (contactsArray) => {
   let promises = [];
   for (let i = 0; i < contactsArray.length; i++) {
-    promises.push(setTimeout(() => sendNoticeMail(contactsArray[i]), 2500 * i)) // Avoid sending too much at once
+    promises.push(setTimeout(() => sendNoticeMail(contactsArray[i]), 3000 * i)) // Avoid sending too much at once
   }
   return Promise.all(promises);
 }
@@ -62,6 +62,8 @@ exports.sendErrorEmails = (emails, error) => {
  * @param {Error} error - the thrown Error object
  */
 exports.sendNotFoundEmails = (emails, notFoundContacts) => {
+  if (notFoundContacts.length < 1)
+    return Promise.resolve();
   logger.log('Sending not found emails to ' + emails.join() + ' for the addresses: ' + notFoundContacts.map(contact => contact.address).join())
   const message = {
     from: `bloxberg Validator Monitoring <monitoring@bloxberg.org>`,
