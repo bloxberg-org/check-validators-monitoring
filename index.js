@@ -4,8 +4,11 @@ const { sendNoticeMails, sendErrorEmails, sendNotFoundEmails } = require('./emai
 const { getContactDetails } = require('./contacts');
 const schedule = require('node-schedule');
 const logger = require('./logger');
+const cronstrue = require('cronstrue');
+
 
 const ERROR_CONTACTS = ['lawton@mpdl.mpg.de', 'uzdogan@mpdl.mpg.de']
+const cronSchedule = '0 13 * * 1';
 // Set the schedule to run in cron format see helper https://crontab.guru/
 // Format:
 // minute hour day month day-of-week
@@ -18,7 +21,8 @@ if (process.env.NODE_ENV === 'development') {
   // schedule.scheduleJob('*/5 * * * * *', () => logger.log('Hi'));
   checkValidatorsAndSendEmails()
 } else {
-  schedule.scheduleJob('0 13 * * 1', checkValidatorsAndSendEmails);
+  schedule.scheduleJob(cronSchedule, checkValidatorsAndSendEmails);
+  logger.log('The script is scheduled to run ' + cronstrue.toString(cronSchedule, { use24HourTimeFormat: true, verbose: true }));
 }
 
 function checkValidatorsAndSendEmails() {

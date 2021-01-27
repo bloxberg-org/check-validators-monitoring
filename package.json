@@ -9,7 +9,8 @@
   "author": "kuzdogan",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
+    "cronstrue": "^1.108.0",
     "csv-parser": "^3.0.0",
     "dotenv": "^8.2.0",
     "ethereum-regex": "^1.1.13",
