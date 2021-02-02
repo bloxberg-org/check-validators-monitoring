@@ -19,17 +19,17 @@ const transport = nodemailer.createTransport({
 });
 
 /**
- * @function sendNoticeMails to send each received offline validator contact an email.
+ * @function sendNoticeEmails to send each received offline validator contact an email.
  * 
- * Takes an array of contacts and wraps each of them in a Promise that resolves into the response of @function transport.sendMail()
+ * Takes an array of contacts and wraps each of them in a Promise that resolves into the response of the function transport.sendMail()
  * 
- * @param {Array<Object>} contactsArray from @module contacts.js @function getContactDetails
+ * @param {Array<Object>} contactsArray from module contacts.js function getContactDetails
  * @returns {Promise} initially a single wrapped promise, returns an array of results. see Promise.all().
  */
-exports.sendNoticeMails = (contactsArray) => {
+exports.sendNoticeEmails = (contactsArray) => {
   let promises = [];
   for (let i = 0; i < contactsArray.length; i++) {
-    promises.push(setTimeout(() => sendNoticeMail(contactsArray[i]), 3000 * i)) // Avoid sending too much at once
+    promises.push(setTimeout(() => sendNoticeEmail(contactsArray[i]), 3000 * i)) // Avoid sending too much at once
   }
   return Promise.all(promises);
 }
@@ -56,10 +56,15 @@ exports.sendErrorEmails = (emails, error) => {
 }
 
 /**
- * Function to send error emails to admins when the script fails.
+ * Function to send error emails to bloxberg admins when the script fails.
  * 
  * @param {Array} emails - array of email strings as receivers
- * @param {Error} error - the thrown Error object
+ * @param {Array} notFoundContacts - array of validator objects without a found contact.
+ * @example
+ * [
+ *  {address: 0x1fd210....321, institution: undefined},
+ *  {address: 0x2fe3ad....da2, institution: Some University},
+ * ]
  */
 exports.sendNotFoundEmails = (emails, notFoundContacts) => {
   if (notFoundContacts.length < 1)
@@ -85,13 +90,13 @@ exports.sendNotFoundEmails = (emails, notFoundContacts) => {
 }
 
 /**
- * @function to send a notice email to the validator input. 
+ * @function to send a notice email to each of the contacts of an offline validator. 
+ * If there are multiple contacts, sends to all of them at once
  * 
- * @param {Object} validatorObj returned Object from module:validators.getValidatorArray.
- * Format as in @module contacts.js @function getContactDetails
+ * @param {Object} contactArray array of contacts of an institution. 
  * 
  * @example 
-* {
+* [{
     haupt: 'N',
     institution: "ABC university"
     address: "0xadF2sA1b26Dcb1A723591c144deeb6633E5A79b",
@@ -103,10 +108,23 @@ exports.sendNotFoundEmails = (emails, notFoundContacts) => {
     comments: 'comments',
     lastOnline: 2020-11-04T11:06:50.000Z
   },
+  {
+    haupt: 'N',
+    institution: "ABC university"
+    address: "0xadF2sA1b26Dcb1A723591c144deeb6633E5A79b",
+    title: 'Mr.',
+    academicTitle: '',
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john[at]abc.edu',
+    comments: 'comments',
+    lastOnline: 2020-11-04T11:06:50.000Z
+  },
+]
  * 
  */
-function sendNoticeMail(contactArray) {
-  logger.log('Sending notice mail to: ', contactArray)
+function sendNoticeEmail(contactArray) {
+  logger.log('Sending notice email to: ', contactArray)
   let { institution, address, lastOnline } = contactArray[0]; // Same for all contacts
   let fullNames = '', emails = [] // Different if multiple contacts
   for (contact of contactArray) {
@@ -115,7 +133,7 @@ function sendNoticeMail(contactArray) {
     emails.push(email);
   }
   let lastOnlineDateString = moment(lastOnline).format('MMMM Do YYYY')
-  let lastOnlineTimeString = moment(lastOnline).format('hh:mm a [Germany time]')
+  let lastOnlineTimeString = moment(lastOnline).format('hh:mm a [Germany time]') // moment uses server's local time. Our servers are in Germany.
   const properties = {
     fullNames, institution, address,
     lastOnlineDateString, lastOnlineTimeString
@@ -132,7 +150,7 @@ function sendNoticeMail(contactArray) {
 
 }
 
-// Replaces properties in {{ double parantheses }} with values in the parameter object.
+// Replaces properties in the template with {{ double parantheses }} with values in the parameter object.
 // from: https://stackoverflow.com/questions/29831810/how-to-fill-information-into-a-template-text-file
 function applyTemplate(template, properties) {
   var returnValue = "";

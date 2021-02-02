@@ -8,14 +8,18 @@ const CONSORTIUM_FILE = 'bloxberg_consortium.csv';
 const logger = require('./logger');
 
 /**
- * @function getContactDetails to get the contact details for each input validator.
+ * @function getContactDetails to get the contact details for each input validator in the array.
  * 
- * Finds the corresponding Institution using the address in the input. Assumes each Institution has their validator address in the Bemerkung of their Haupt address. 
- * If there are techies for the insitution, returns them as a contact. If there are no techies, adds all contacts as a contact.
+ * Finds the corresponding Institution using the address in the input. Assumes each Institution 
+ * has their validator address in the Bemerkung of their Haupt address. Using that address in the
+ * Bemerkung, gets the institution name and looks for contacts with same insitution name.
  * 
- * There is a confusion around institute-institut. The key intitution is used as a mapping between main contacts and techies, i.e. they share this field. Looks for the Institution field first, if empty, uses Institut. See @function formatCobraObject
+ * If there are techies for the insitution, returns them as a contact. If there are no techies,
+ * adds all contacts as a contact.
  * 
- * @param {Array} offlineValidatorsArray - Array of objects representing validators below format. Typically only offline validators are input. 
+ * There is a confusion between institute-institut. The contacts from Cobra contains both fields. Looks for the Institution field first, if empty, uses Institut. See the function formatCobraCsvLine
+ * 
+ * @param {Array} offlineValidatorsArray - Array of objects representing validators in below format. Typically only offline validators are input. 
  * 
  * @example
  *
@@ -26,7 +30,7 @@ const logger = require('./logger');
     isUp24h: false,
     isUp3d: false
   }
- * @returns {Promise<Array>} that resolves to an array of an array of contact objects including the address fields. Each element of first array is an institution and each object in second array is the contacts for that institution.
+ * @returns {Promise<Array>} that resolves to an array of an array of contact objects including the address fields. Each element of the first array is an institution and each object in the second array contains the contacts for that institution.
  * @example
  *  [
 *     [{
@@ -78,12 +82,13 @@ exports.getContactDetails = async (offlineValidatorsArray) => {
   // Prepare data
   let techies = await readCSVtoJson(TECHIE_FILE);
   let consortium = await readCSVtoJson(CONSORTIUM_FILE);
-  let addressInstitutionMap = mapAddressToInsitutions(consortium);
+  let addressInstitutionMap = mapEthAddressesToInsitutions(consortium);
   let groupedTechies = groupContactsByInstitution(techies);
   let groupedConsortium = groupContactsByInstitution(consortium);
 
-  console.log(groupedTechies)
   let notFoundContacts = []
+
+  // Iterate offline validators
   for (validator of offlineValidatorsArray) {
     let address = validator.address;
     let institution = addressInstitutionMap[address];
@@ -99,9 +104,9 @@ exports.getContactDetails = async (offlineValidatorsArray) => {
       notFoundContacts.push({ institution, address });
     }
 
-    // Add address field to contact object
-    if (contacts) {
-      let contactsWithAddress = contacts.map(contact => { // if contacts undefined, throw below.
+    // Add the missing address and lastOnline fields to contact object before returning.
+    if (contacts) { // check if notFoundContact
+      let contactsWithAddress = contacts.map(contact => {
         return {
           address: address,
           lastOnline: validator.lastOnline,
@@ -115,18 +120,18 @@ exports.getContactDetails = async (offlineValidatorsArray) => {
 }
 
 /**
- * @function readCSVtoJson to read a Cobra .csv file (converted from .xlsx) and 
+ * @function readCSVtoJson to convert a Cobra .csv file into json format.
  * 
- * @returns {Promise<Array>} that resolves to an array with each csv line as an object
  * @param {String} fileName - name of the .csv file to be read
+ * @returns {Promise<Array>} that resolves to an array with each csv line as a JSON object. For the format of the objects see the function formatCobraCsvLine
  */
 function readCSVtoJson(fileName) {
   let resultsArr = [];
   return new Promise((resolve, reject) => {
     fs.createReadStream(fileName)
-      .pipe(stripBom())
+      .pipe(stripBom()) // Need to remove BOM in .csv see https://csv.thephpleague.com/8.0/bom/
       .pipe(csv())
-      .on('data', (data) => resultsArr.push(formatCobraObject(data)))
+      .on('data', (data) => resultsArr.push(formatCobraCsvLine(data)))
       .on('end', () => {
         resolve(resultsArr)
       })
@@ -135,14 +140,14 @@ function readCSVtoJson(fileName) {
 }
 
 /**
- * @function formatCobraObject to format csv entries that are read into a raw object into a useful format to be processed. 
+ * @function formatCobraCsvLine to format csv entries that are read into a raw object into a useful JSON format to be processed. 
  * 
- * @example e.g. csv-parse add the fields Haupt and E-Mail1 as keys with quotes 'Haupt' and 'E-Mail1'. Change does into a better format.
+ * @example e.g. csv-parse add the fields Haupt and E-Mail1 as JSON keys with quotes 'Haupt' and 'E-Mail1'. Change does into a better format.
  * 
  * @returns {Object} Object of format
  * @param {Object} obj csv line read by the csv-parse
  */
-function formatCobraObject(obj) {
+function formatCobraCsvLine(obj) {
   return {
     haupt: obj.Haupt,
     institution: decideInstitutionName(obj),
@@ -160,11 +165,12 @@ function decideInstitutionName(obj) {
 }
 
 /**
- * @function mapAddressToInsitutions to map ethereum addresses to institution names.
+ * @function mapEthAddressesToInsitutions to map ethereum addresses to institution names.
  * 
- * Iterates over an array of main contacts. Checks their comments field. If finds a String match for an ethereum address, maps this to the institution name.
+ * Iterates over an array of main contacts. Checks their comments field. If finds a String matching
+ * to an ethereum address, maps this to the institution name.
  * 
- * @param {Array} contactsArray array of contacts of format from readCSVtoJson->formatCobraObject
+ * @param {Array} contactsArray array of contacts of format from formatCobraCsvLine
  * @returns {Object} a mapping from addresses to institution names.
  * @example 
  * {
@@ -173,7 +179,7 @@ function decideInstitutionName(obj) {
  * ...
  * }
  */
-function mapAddressToInsitutions(contactsArray) {
+function mapEthAddressesToInsitutions(contactsArray) {
   let result = {}
   for (contact of contactsArray) {
     if (contact.haupt === 'H' && ethereumRegex().test(contact.comments)) {
@@ -187,7 +193,7 @@ function mapAddressToInsitutions(contactsArray) {
 /**
  * Function to group an array of contacts by their institution name.
  * 
- * @param {Array<Object>} contactsArray formatted as in readCSVtoJson->formatCobraObject
+ * @param {Array<Object>} contactsArray of contact objects formatted as in formatCobraCsvLine
  * @returns {Object} with institution name as keys and an array of contacts as values.
  * @example
  * {
@@ -220,12 +226,12 @@ function mapAddressToInsitutions(contactsArray) {
 function groupContactsByInstitution(contactsArray) {
   let result = {}
   for (contact of contactsArray) {
-    if (contact.haupt === 'H') { // Ignore Haupt address
+    if (contact.haupt === 'H') { // Ignore Haupt address contacts are Neben adresses.
       continue
     }
 
     let inst = contact.institution;
-    if (!result[inst]) { // Init array
+    if (!result[inst]) { // Init array under the object key "inst"
       result[inst] = [];
     }
 

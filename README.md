@@ -1,6 +1,6 @@
 # check-validators-monitoring
 
-A simple tool to periodically check the bloxberg validators and send them emails that are retrieved from Cobra contacts. Current setting checks if validators have been online since 3 days and runs every Monday at 13:00.
+A simple tool to periodically check the bloxberg validators and send them emails to addresses which are retrieved from Cobra contacts. Current setting checks if validators have been online since 3 days and runs every Monday at 13:00.
 
 ## Requirements
 
@@ -29,7 +29,7 @@ Export the techie and consoritum contacts in the .csv format. The file from Cobr
 Haupt,Institution,Institut,Anrede,Titel,Vorname1,Nachname1,E-Mail1,Bemerkung
 ```
 
-**Important** if you'll do a custom research don't forget to exclude inactive users. Always use the saved search.
+**Important** if you'll do a custom search in Cobra don't forget to exclude inactive users. Always use the saved search.
 
 There are existing settings in Cobra CRM for exporting. To do that go to the tab Recherche. There select Gespeicherte Recherchen. In Bereich System, choose Bloxberg Techies Monitoring. Click Ausführen. Then in Daten tab click Exportieren. In the settings there is an ready made formatting called 'Validator Monitoring - Techies'. Choose the setting and export the file. The file name must be `bloxberg_techies.csv`.
 

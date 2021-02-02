@@ -1,6 +1,6 @@
 
 const { getValidatorArray } = require('./validators');
-const { sendNoticeMails, sendErrorEmails, sendNotFoundEmails } = require('./email');
+const { sendNoticeEmails, sendErrorEmails, sendNotFoundEmails } = require('./email');
 const { getContactDetails } = require('./contacts');
 const schedule = require('node-schedule');
 const logger = require('./logger');
@@ -27,14 +27,14 @@ if (process.env.NODE_ENV === 'development') {
 
 function checkValidatorsAndSendEmails() {
   getValidatorArray()
-    .then(validatorsArray => validatorsArray.filter(validator => !validator.isUp3d))
+    .then(validatorsArray => validatorsArray.filter(validator => !validator.isUp3d)) // filter validators offline for 3 days.
     .then(offlineValidatorsArray => {
       logger.log("Got the online status for validators: ");
       return getContactDetails(offlineValidatorsArray);
     })
     .then(({ offlineContacts, notFoundContacts }) => {
       return Promise.all([
-        sendNoticeMails(offlineContacts),
+        sendNoticeEmails(offlineContacts),
         sendNotFoundEmails(ERROR_CONTACTS, notFoundContacts)
       ]);
     })
