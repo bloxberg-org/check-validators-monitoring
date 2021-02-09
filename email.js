@@ -26,12 +26,21 @@ const transport = nodemailer.createTransport({
  * @param {Array<Object>} contactsArray from module contacts.js function getContactDetails
  * @returns {Promise} initially a single wrapped promise, returns an array of results. see Promise.all().
  */
-exports.sendNoticeEmails = (contactsArray) => {
+exports.sendNoticeEmails = (contactsArray, ccContacts) => {
   let promises = [];
   for (let i = 0; i < contactsArray.length; i++) {
-    promises.push(setTimeout(() => sendNoticeEmail(contactsArray[i]), 3000 * i)) // Avoid sending too much at once
+    promises.push(
+      later(3000 * i) // Avoid sending too much at once
+        .then(() => sendNoticeEmail(contactsArray[i], ccContacts))
+    )
   }
   return Promise.all(promises);
+}
+
+function later(delay) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, delay);
+  });
 }
 
 /**
@@ -66,13 +75,13 @@ exports.sendErrorEmails = (emails, error) => {
  *  {address: 0x2fe3ad....da2, institution: Some University},
  * ]
  */
-exports.sendNotFoundEmails = (emails, notFoundContacts) => {
+exports.sendNotFoundEmails = (notFoundContacts, admins) => {
   if (notFoundContacts.length < 1)
     return Promise.resolve();
   logger.log('Sending not found emails to ' + emails.join() + ' for the addresses: ' + notFoundContacts.map(contact => contact.address).join())
   const message = {
     from: `bloxberg Validator Monitoring <monitoring@bloxberg.org>`,
-    to: emails,
+    to: admins,
     subject: '❗ Contact Not Found: bloxberg Validator Offline',
     text: `The following validators do not have an assigned contact and 
           hence were not able to be contacted. If the institution name is undefined, 
@@ -123,7 +132,7 @@ exports.sendNotFoundEmails = (emails, notFoundContacts) => {
 ]
  * 
  */
-function sendNoticeEmail(contactArray) {
+function sendNoticeEmail(contactArray, ccContacts) {
   logger.log('Sending notice email to: ', contactArray)
   let { institution, address, lastOnline } = contactArray[0]; // Same for all contacts
   let fullNames = '', emails = [] // Different if multiple contacts
@@ -141,13 +150,12 @@ function sendNoticeEmail(contactArray) {
   const message = {
     from: `bloxberg Validator Monitoring <monitoring@bloxberg.org>`,
     to: emails,
+    cc: ccContacts,
     subject: 'bloxberg Validator Offline',
     html: applyTemplate(HTML_TEMPLATE, properties)
   };
-
   // return setTimeout(() => Promise.resolve(`Email sent to ${institution}: ${email}`), Math.random() * 1000 * 2) // Debug with randomly resolved Promises.
   return transport.sendMail(message);
-
 }
 
 // Replaces properties in the template with {{ double parantheses }} with values in the parameter object.

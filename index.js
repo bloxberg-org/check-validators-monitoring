@@ -8,6 +8,7 @@ const cronstrue = require('cronstrue');
 
 
 const ERROR_CONTACTS = ['lawton@mpdl.mpg.de', 'uzdogan@mpdl.mpg.de']
+const CC_CONTACTS = ['lawton@mpdl.mpg.de', 'uzdogan@mpdl.mpg.de']
 const cronSchedule = '0 13 * * 1';
 // Set the schedule to run in cron format see helper https://crontab.guru/
 // Format:
@@ -34,9 +35,17 @@ function checkValidatorsAndSendEmails() {
     })
     .then(({ offlineContacts, notFoundContacts }) => {
       return Promise.all([
-        sendNoticeEmails(offlineContacts),
-        sendNotFoundEmails(ERROR_CONTACTS, notFoundContacts)
+        sendNoticeEmails(offlineContacts, CC_CONTACTS),
+        sendNotFoundEmails(notFoundContacts, ERROR_CONTACTS)
       ]);
+    })
+    .then((promises) => {
+      // Debug SMTP responses.
+      // logger.log('Notice Email Responses:');
+      // logger.log(JSON.stringify(promises[0], 2));
+      // logger.log('Error Email Responses:');
+      // logger.log(JSON.stringify(promises[1], 2));
+      logger.log('✅ ✅ ✅ Run was successful ✅ ✅ ✅');
     })
     .catch(err => {
       logger.error("SOMETHING WENT WRONG")
