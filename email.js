@@ -8,6 +8,8 @@ const fs = require('fs');
 const path = require('path');
 const HTML_TEMPLATE = fs.readFileSync(path.resolve(__dirname, './email-template.html'), 'utf-8');
 const logger = require('./logger');
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 const transport = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -52,7 +54,7 @@ function later(delay) {
 exports.sendErrorEmails = (emails, error) => {
   logger.log('Sending error emails to ' + emails.join() + 'about: ' + error)
   const message = {
-    from: `bloxberg Validator Monitoring <monitoring@bloxberg.org>`,
+    from: `monitoring@bloxberg.org`,
     to: emails,
     subject: '❗ ERROR: bloxberg Validator Offline',
     text: `When running the script the following error is encountered\n\n
@@ -61,7 +63,7 @@ exports.sendErrorEmails = (emails, error) => {
   };
 
   // return setTimeout(() => Promise.resolve(`Email sent to ${institution}: ${email}`), Math.random() * 1000 * 2) // Debug with randomly resolved Promises.
-  return transport.sendMail(message);
+  return sgMail.send(message);
 }
 
 /**
@@ -80,7 +82,7 @@ exports.sendNotFoundEmails = (notFoundContacts, admins) => {
     return Promise.resolve();
   logger.log('Sending not found emails to ' + emails.join() + ' for the addresses: ' + notFoundContacts.map(contact => contact.address).join())
   const message = {
-    from: `bloxberg Validator Monitoring <monitoring@bloxberg.org>`,
+    from: `monitoring@bloxberg.org`,
     to: admins,
     subject: '❗ Contact Not Found: bloxberg Validator Offline',
     text: `The following validators do not have an assigned contact and 
@@ -95,7 +97,7 @@ exports.sendNotFoundEmails = (notFoundContacts, admins) => {
   };
 
   // return setTimeout(() => Promise.resolve(`Email sent to ${institution}: ${email}`), Math.random() * 1000 * 2) // Debug with randomly resolved Promises.
-  return transport.sendMail(message);
+  return sgMail.send(message);
 }
 
 /**
@@ -148,14 +150,15 @@ function sendNoticeEmail(contactArray, ccContacts) {
     lastOnlineDateString, lastOnlineTimeString
   }
   const message = {
-    from: `bloxberg Validator Monitoring <monitoring@bloxberg.org>`,
+    from: `monitoring@bloxberg.org`,
     to: emails,
     cc: ccContacts,
     subject: 'bloxberg Validator Offline',
     html: applyTemplate(HTML_TEMPLATE, properties)
   };
+  console.log('message',message)
   // return setTimeout(() => Promise.resolve(`Email sent to ${institution}: ${email}`), Math.random() * 1000 * 2) // Debug with randomly resolved Promises.
-  return transport.sendMail(message);
+  return sgMail.send(message)
 }
 
 // Replaces properties in the template with {{ double parantheses }} with values in the parameter object.
