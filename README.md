@@ -39,7 +39,7 @@ Finally copy the files `bloxberg_techies.csv` and `bloxberg_consortium.csv` in t
 
 ### Mail credentials
 
-Copy the file `.env-template` to a new file called `.env`. Add the SMTP credentials for each variable. You can use a service like [Mailtap](https://mailtrap.io/) to test emails.
+Copy the file `.env-template` to a new file called `.env`. Add the SMTP credentials for each variable. You can use a service like [Sendgrid](https://www.sendgrid.com/) to test emails.
 
 ### Set the schedule
 
