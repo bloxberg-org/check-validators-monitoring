@@ -8,17 +8,10 @@ const fs = require('fs');
 const path = require('path');
 const HTML_TEMPLATE = fs.readFileSync(path.resolve(__dirname, './email-template.html'), 'utf-8');
 const logger = require('./logger');
+
+// to send the email using sendgrid service
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-
-const transport = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PASS,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  }
-});
 
 /**
  * @function sendNoticeEmails to send each received offline validator contact an email.
