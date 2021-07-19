@@ -60,7 +60,7 @@ function later(delay) {
 exports.sendErrorEmails = (emails, error) => {
   logger.log('Sending error emails to ' + emails.join() + 'about: ' + error)
   const message = {
-    from: `monitoring@bloxberg.org`,
+    from: `bloxberg Validator Monitoring <monitoring@bloxberg.org>`,
     to: emails,
     subject: '❗ ERROR: bloxberg Validator Offline',
     text: `When running the script the following error is encountered\n\n
@@ -92,7 +92,7 @@ exports.sendNotFoundEmails = (notFoundContacts, admins) => {
       notFoundContacts.map((contact) => contact.address).join(),
   )
   const message = {
-    from: `monitoring@bloxberg.org`,
+    from: `bloxberg Validator Monitoring <monitoring@bloxberg.org>`,
     to: admins,
     subject: '❗ Contact Not Found: bloxberg Validator Offline',
     text:
@@ -167,7 +167,7 @@ function sendNoticeEmail(contactArray, ccContacts) {
     lastOnlineTimeString,
   }
   const message = {
-    from: `ghag@mpdl.mpg.de`,
+    from: `bloxberg Validator Monitoring <monitoring@bloxberg.org>`,
     to: emails,
     cc: ccContacts,
     subject: 'bloxberg Validator Offline',
