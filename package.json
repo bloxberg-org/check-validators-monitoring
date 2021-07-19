@@ -9,6 +9,7 @@
   "author": "kuzdogan",
   "license": "GPL-3.0-or-later",
   "dependencies": {
+    "@sendgrid/mail": "^7.4.5",
     "axios": "^0.21.1",
     "cronstrue": "^1.108.0",
     "csv-parser": "^3.0.0",
