@@ -7,9 +7,9 @@ const logger = require('./logger');
 const cronstrue = require('cronstrue');
 
 
-const ERROR_CONTACTS = ['lawton@mpdl.mpg.de', 'uzdogan@mpdl.mpg.de']
-const CC_CONTACTS = ['lawton@mpdl.mpg.de', 'uzdogan@mpdl.mpg.de']
-const cronSchedule = '0 13 * * 1';
+const ERROR_CONTACTS = ['lawton@mpdl.mpg.de']
+const CC_CONTACTS = ['lawton@mpdl.mpg.de']
+const cronSchedule = '0 13 * * 2';
 // Set the schedule to run in cron format see helper https://crontab.guru/
 // Format:
 // minute hour day month day-of-week

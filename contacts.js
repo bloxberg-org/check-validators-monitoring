@@ -96,9 +96,10 @@ exports.getContactDetails = async (offlineValidatorsArray) => {
     let contacts; // of this validator
 
     // If there's a techie for the institution add them as contact
-    if (groupedTechies[institution]) {
-      contacts = groupedTechies[institution];
-    } else if (groupedConsortium[institution]) { // all other contacts we have
+   // if (groupedTechies[institution]) {
+   //   contacts = groupedTechies[institution];
+   // } else 
+    if (groupedConsortium[institution]) { // all other contacts we have
       contacts = groupedConsortium[institution];
     } else {  // no contacts
       notFoundContacts.push({ institution, address });

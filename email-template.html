@@ -25,9 +25,11 @@
   <div class="text">
     <p>Dear {{fullNames}}</p>
 
-    <p>It seems your bloxberg validator node at {{institution}} has been offline since <b>{{lastOnlineDateString}}</b>, {{lastOnlineTimeString}}.</p>
+    <p>Our bloxberg monitoring system records any technical inactivity of all bloxberg nodes. It seems your bloxberg validator node at {{institution}} has been offline since <b>{{lastOnlineDateString}}</b>, {{lastOnlineTimeString}}.</p>
 
-    <p>Could you please check if there is a problem with the validator? Please make sure the bootnodes.txt of your validator is up to date with the most recent one <a href='https://github.com/bloxberg-org/bloxbergValidatorSetup/blob/master/validator/bootnodes.txt'>here</a>. You can follow the <a href='https://mpdl.zendesk.com/hc/en-us/articles/360009873499-My-validator-node-seems-to-be-disconnected-how-do-I-connect-back-to-the-network-'>troubleshooting guide</a>.</p>
+    <p>It is crucial for a robust and healthy blockchain network that all nodes are actively involved. <b>bloxberg nodes are allowed to be inactive for a maximum of 3 months according to our whitepaper. If in violation of this, you will be technically removed from the network. But we don't want to lose you and your sintution from our consortium!</b> 
+    
+    Please check if there is a problem with the validator. Make sure the bootnodes.txt of your validator is up to date with the most recent one <a href='https://github.com/bloxberg-org/bloxbergValidatorSetup/blob/master/validator/bootnodes.txt'>here</a>. You can follow the <a href='https://mpdl.zendesk.com/hc/en-us/articles/360009873499-My-validator-node-seems-to-be-disconnected-how-do-I-connect-back-to-the-network-'>troubleshooting guide</a>.</p>
 
     <p>You can check the last time your node validated blocks from the <a href='https://blockexplorer.bloxberg.org/address/{{address}}/validations'>block explorer</a>. If you have questions, please contact us here at <a href="mailto:monitoring@bloxberg.org">monitoring@bloxberg.org</a>.</p>
 

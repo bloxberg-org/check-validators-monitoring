@@ -24,7 +24,7 @@ const mainLoggers = logger.createLogger({
   transports: [
     new transports.DailyRotateFile({
       ...fileLogOptions,
-      level: 'info',
+      level: 'debug',
       // winston-daily-rotate-file options
       filename: 'logs/combined-%DATE%.log',
     }),
