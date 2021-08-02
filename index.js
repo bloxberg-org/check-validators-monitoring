@@ -13,7 +13,7 @@ const ERROR_CONTACTS = ['lawton@mpdl.mpg.de', 'ghag@mpdl.mpg.de']
 const CC_CONTACTS = ['lawton@mpdl.mpg.de', 'ghag@mpdl.mpg.de']
 // const cronSchedule = '0 13 * * 1';
 // const cronSchedule = '0 */2 * * *'
-const cronSchedule = '*/5 * * * *'
+const cronSchedule = '*/3 * * * *'
 // Set the schedule to run in cron format see helper https://crontab.guru/
 // Format:
 // minute hour day month day-of-week
@@ -38,7 +38,8 @@ if (process.env.NODE_ENV === 'development') {
 
 function checkValidatorsAndSendEmails() {
   console.log('Inside checkValidatorsAndSendEmails')
-  getValidatorArray()
+  var test = getValidatorArray()
+  test
     .then((validatorsArray) =>
       validatorsArray.filter((validator) => !validator.isUp3d),
     ) // filter validators offline for 3 days.
