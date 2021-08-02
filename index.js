@@ -12,7 +12,8 @@ const cronstrue = require('cronstrue')
 const ERROR_CONTACTS = ['lawton@mpdl.mpg.de', 'ghag@mpdl.mpg.de']
 const CC_CONTACTS = ['lawton@mpdl.mpg.de', 'ghag@mpdl.mpg.de']
 // const cronSchedule = '0 13 * * 1';
-const cronSchedule = '0 */2 * * *'
+// const cronSchedule = '0 */2 * * *'
+const cronSchedule = '*/5 * * * *'
 // Set the schedule to run in cron format see helper https://crontab.guru/
 // Format:
 // minute hour day month day-of-week
@@ -36,6 +37,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 function checkValidatorsAndSendEmails() {
+  console.log('Inside checkValidatorsAndSendEmails')
   getValidatorArray()
     .then((validatorsArray) =>
       validatorsArray.filter((validator) => !validator.isUp3d),
@@ -45,10 +47,11 @@ function checkValidatorsAndSendEmails() {
       return getContactDetails(offlineValidatorsArray)
     })
     .then(({ offlineContacts, notFoundContacts }) => {
-      return Promise.all([
-        sendNoticeEmails(offlineContacts, CC_CONTACTS),
-        sendNotFoundEmails(notFoundContacts, ERROR_CONTACTS),
-      ])
+      console.log('Inside offlineContacts', offlineContacts)
+      // return Promise.all([
+      //   sendNoticeEmails(offlineContacts, CC_CONTACTS),
+      //   sendNotFoundEmails(notFoundContacts, ERROR_CONTACTS),
+      // ])
     })
     .then((promises) => {
       // Debug SMTP responses.
@@ -61,6 +64,6 @@ function checkValidatorsAndSendEmails() {
     .catch((err) => {
       logger.error('SOMETHING WENT WRONG')
       logger.error(err.stack)
-      sendErrorEmails(ERROR_CONTACTS, err)
+      // sendErrorEmails(ERROR_CONTACTS, err)
     })
 }
