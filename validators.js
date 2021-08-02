@@ -10,6 +10,7 @@ const contractAddress = '0x9850711951A84Ef8a2A31a7868d0dCa34B0661cA'
 const metaDataContractAddress = '0xF2Cde379d6818Db4a8992ed132345e18e99689e9'
 const web3 = new Web3(provider)
 const contract = new web3.eth.Contract(abi, contractAddress)
+console.log('contract--------', contract)
 const metaDataContract = new web3.eth.Contract(
   metaDataAbi,
   metaDataContractAddress,
