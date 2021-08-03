@@ -6,7 +6,6 @@ const abi = require('./abis/RelaySet.abi.json')
 const metaDataAbi = require('./abis/ValidatorMetadata.abi.json')
 const Web3 = require('web3')
 const provider = new Web3.providers.HttpProvider('https://core.bloxberg.org')
-console.log('provider', provider)
 const contractAddress = '0x9850711951A84Ef8a2A31a7868d0dCa34B0661cA'
 const metaDataContractAddress = '0xF2Cde379d6818Db4a8992ed132345e18e99689e9'
 const web3 = new Web3(provider)
