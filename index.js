@@ -60,7 +60,7 @@ function checkValidatorsAndSendEmails() {
       logger.log('✅ ✅ ✅ Run was successful ✅ ✅ ✅')
     })
     .catch((err) => {
-      logger.error('SOMETHING WENT WRONG')
+      logger.error('SOMETHING WENT WRONG', err)
       logger.error(err.stack)
       sendErrorEmails(ERROR_CONTACTS, err)
     })
