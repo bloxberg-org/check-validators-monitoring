@@ -46,10 +46,10 @@ function checkValidatorsAndSendEmails() {
     })
     .then(({ offlineContacts, notFoundContacts }) => {
       console.log('Inside offlineContacts', offlineContacts)
-      return Promise.all([
-        sendNoticeEmails(offlineContacts, CC_CONTACTS),
-        sendNotFoundEmails(notFoundContacts, ERROR_CONTACTS),
-      ])
+      // return Promise.all([
+      //   sendNoticeEmails(offlineContacts, CC_CONTACTS),
+      //   sendNotFoundEmails(notFoundContacts, ERROR_CONTACTS),
+      // ])
     })
     .then((promises) => {
       // Debug SMTP responses.
@@ -62,6 +62,6 @@ function checkValidatorsAndSendEmails() {
     .catch((err) => {
       logger.error('SOMETHING WENT WRONG', err)
       logger.error(err.stack)
-      sendErrorEmails(ERROR_CONTACTS, err)
+      // sendErrorEmails(ERROR_CONTACTS, err)
     })
 }
