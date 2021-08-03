@@ -33,9 +33,7 @@ const logger = require('./logger')
  * }, ...]
  */
 exports.getValidatorArray = async () => {
-  console.log('Inside getValidatorArray')
   const validators = await contract.methods.getValidators().call()
-  console.log('validators', validators)
   logger.log('    24h 3d\tInstitute Name: Address')
   logger.log('------------------------------------------')
   // Check and print each institute
