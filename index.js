@@ -36,6 +36,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 function checkValidatorsAndSendEmails() {
+  console.log('Test For docker')
   getValidatorArray()
     .then((validatorsArray) =>
       validatorsArray.filter((validator) => !validator.isUp3d),

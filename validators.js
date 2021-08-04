@@ -32,6 +32,7 @@ const logger = require('./logger')
  * }, ...]
  */
 exports.getValidatorArray = async () => {
+  console.log('Test For docker getValidatorArray')
   const validators = await contract.methods.getValidators().call()
   logger.log('    24h 3d\tInstitute Name: Address')
   logger.log('------------------------------------------')
