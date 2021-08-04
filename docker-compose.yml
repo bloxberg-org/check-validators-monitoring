@@ -7,5 +7,3 @@ services:
     container_name: validators-monitoring
     volumes:
       - ./logs:/home/node/app/logs
-  dns:
-    - https://core.bloxberg.org
