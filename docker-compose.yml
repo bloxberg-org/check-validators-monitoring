@@ -7,6 +7,5 @@ services:
     container_name: validators-monitoring
     volumes:
       - ./logs:/home/node/app/logs
-  application:
     dns:
       - 8.8.8.8
