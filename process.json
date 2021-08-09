@@ -1,0 +1,10 @@
+{
+  "apps": [
+    {
+      "name": "validators-monitoring",
+      "script": "index.js",
+      "watch": ["index.js"],
+      "ignore_watch": ["node_modules", "logs"]
+    }
+  ]
+}
