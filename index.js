@@ -9,8 +9,16 @@ const schedule = require('node-schedule')
 const logger = require('./logger')
 const cronstrue = require('cronstrue')
 
-const ERROR_CONTACTS = ['lawton@mpdl.mpg.de', 'ghag@mpdl.mpg.de']
-const CC_CONTACTS = ['lawton@mpdl.mpg.de', 'ghag@mpdl.mpg.de']
+const ERROR_CONTACTS = [
+  'lawton@mpdl.mpg.de',
+  'ghag@mpdl.mpg.de',
+  'kist@mpdl.mpg.de',
+]
+const CC_CONTACTS = [
+  'lawton@mpdl.mpg.de',
+  'ghag@mpdl.mpg.de',
+  'kist@mpdl.mpg.de',
+]
 const cronSchedule = '0 13 * * 1'
 // Set the schedule to run in cron format see helper https://crontab.guru/
 // Format:
