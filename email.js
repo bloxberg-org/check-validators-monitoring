@@ -75,7 +75,7 @@ exports.sendErrorEmails = (emails, error) => {
 /**
  * Function to send error emails to bloxberg admins when the script fails.
  *
- * @param {Array} emails - array of email strings as receivers
+ * @param {Array} admins - array of email strings as receivers
  * @param {Array} notFoundContacts - array of validator objects without a found contact.
  * @example
  * [
@@ -87,7 +87,7 @@ exports.sendNotFoundEmails = (notFoundContacts, admins) => {
   if (notFoundContacts.length < 1) return Promise.resolve()
   logger.log(
     'Sending not found emails to ' +
-      emails.join() +
+      admins.join() +
       ' for the addresses: ' +
       notFoundContacts.map((contact) => contact.address).join(),
   )
