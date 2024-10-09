@@ -3,7 +3,7 @@ services:
   monitoring:
     build:
       context: .
-      dockerfile: ./docker/Dockerfile
+      dockerfile: Dockerfile
     container_name: validators-monitoring
     volumes:
       - ./logs:/home/node/app/logs
